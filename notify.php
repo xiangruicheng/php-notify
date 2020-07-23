@@ -257,6 +257,23 @@ class Notify
                 throw new \Exception("mysql connect fail: " . mysqli_connect_error(),'101');
             }
             $this->mysql_conn = $conn;
+        }else{
+            try{
+                mysqli_ping($this->mysql_conn);
+            }catch (Exception $e) {
+                mysqli_close($this->mysql_conn);
+                $conn = mysqli_connect(
+                    $this->db_config['host'],
+                    $this->db_config['username'],
+                    $this->db_config['password'],
+                    $this->db_config['dbname'],
+                    $this->db_config['port']
+                );
+                if (mysqli_connect_errno($conn)) {
+                    throw new \Exception("mysql connect fail: " . mysqli_connect_error(),'101');
+                }
+                $this->mysql_conn = $conn;
+            }
         }
         return $this->mysql_conn;
     }
